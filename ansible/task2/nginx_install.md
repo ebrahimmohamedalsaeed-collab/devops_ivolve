@@ -9,10 +9,10 @@ Automate the configuration of a web server using Ansible:
 ## Step 1: Prepare Inventory File
 Create \`inventory.ini\`:
 
-\`\`\`ini
+```ini
 [webservers]
 192.168.236.135 ansible_user=ebrahim
-\`\`\`
+```
 
 > Replace \`192.168.236.135\` and \`ebrahim\` with your managed node IP and username.
 
@@ -21,7 +21,7 @@ Create \`inventory.ini\`:
 ## Step 2: Create Ansible Playbook
 Create \`webserver.yml\`:
 
-\`\`\`yaml
+```yaml
 ---
 - name: Automated Web Server Configuration
   hosts: webservers
@@ -66,23 +66,23 @@ Create \`webserver.yml\`:
     - name: Show verification result
       ansible.builtin.debug:
         var: result.content
-\`\`\`
+```
 
 ---
 
 ## Step 3: Run the Playbook
-\`\`\`bash
+```bash
 ansible-playbook -i inventory.ini webserver.yml
-\`\`\`
+```
 
 ---
 
 ## Step 4: Verify on Managed Node
 - Open a browser or use \`curl\`:
 
-\`\`\`bash
+```bash
 curl http://192.168.236.135
-\`\`\`
+```
 
 - You should see the customized page:  
 **"Hello from Ansible Web Server!"**
