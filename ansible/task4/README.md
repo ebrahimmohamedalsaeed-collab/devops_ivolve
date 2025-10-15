@@ -36,30 +36,49 @@ ansible/
 ## Step 3: Role Tasks
 ```
 ---
-- name: Install MySQL server
-  ansible.builtin.package:
-    name: mysql-server
-    state: present
+- name: Automate MySQL setup with Vault
+  hosts: db_servers
+  become: true
+  vars_files:
+    - vault.yml
 
-- name: Start and enable MySQL service
-  ansible.builtin.service:
-    name: mysql
-    state: started
-    enabled: true
+  tasks:
+    - name: Install MySQL server
+      ansible.builtin.package:
+        name: mysql-server
+        state: present
 
-- name: Create iVolve database
-  community.mysql.mysql_db:
-    name: iVolve
-    state: present
-    login_user: root
+    - name: Start and enable MySQL service
+      ansible.builtin.service:
+        name: mysql
+        state: started
+        enabled: true
 
-- name: Create user with privileges
-  community.mysql.mysql_user:
-    name: "{{ db_user }}"
-    password: "{{ db_password }}"
-    priv: 'iVolve.*:ALL'
-    state: present
-    login_user: root
+    - name: Create iVolve database
+      community.mysql.mysql_db:
+        name: iVolve
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+    - name: Create MySQL user and grant privileges
+      community.mysql.mysql_user:
+        name: "{{ db_user }}"
+        password: "{{ db_password }}"
+        priv: "iVolve.*:ALL"
+        state: present
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+
+    - name: Validate connection with new user
+      ansible.builtin.shell: |
+        mysql -u {{ db_user }} -p{{ db_password }} -e "SHOW DATABASES;"
+      register: db_output
+
+    - name: Display validation result
+      ansible.builtin.debug:
+        var: db_output.stdout
+
 ```
 
 ---
