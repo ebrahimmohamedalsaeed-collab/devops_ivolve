@@ -36,6 +36,7 @@ ansible/
 ## Step 3: Role Tasks
 ```
 ---
+---
 - name: Automate MySQL setup with Vault
   hosts: db_servers
   become: true
@@ -48,6 +49,11 @@ ansible/
         name: mysql-server
         state: present
 
+    - name: Install Python MySQL dependencies
+      ansible.builtin.package:
+        name: python3-pymysql
+        state: present
+
     - name: Start and enable MySQL service
       ansible.builtin.service:
         name: mysql
@@ -58,8 +64,7 @@ ansible/
       community.mysql.mysql_db:
         name: iVolve
         state: present
-        login_user: root
-        login_password: "{{ mysql_root_password }}"
+        login_unix_socket: /var/run/mysqld/mysqld.sock
 
     - name: Create MySQL user and grant privileges
       community.mysql.mysql_user:
@@ -67,8 +72,7 @@ ansible/
         password: "{{ db_password }}"
         priv: "iVolve.*:ALL"
         state: present
-        login_user: root
-        login_password: "{{ mysql_root_password }}"
+        login_unix_socket: /var/run/mysqld/mysqld.sock
 
     - name: Validate connection with new user
       ansible.builtin.shell: |
@@ -78,6 +82,7 @@ ansible/
     - name: Display validation result
       ansible.builtin.debug:
         var: db_output.stdout
+
 
 ```
 
