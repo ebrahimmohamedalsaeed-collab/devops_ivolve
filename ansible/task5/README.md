@@ -52,7 +52,36 @@ regions:
 filters:
   tag:Name: ivolve
 ```
+---
 
-## Step3 
+## Step3 ansible.cfg
 
+```
 
+[defaults]
+inventory = ./aws_ec2.yml
+enable_plugins = amazon.aws.aws_ec2
+remote_user = ubuntu            # أو ec2-user حسب AMI
+private_key_file = /home/ebrahim/devops_ivolve/ansible/task5/ivolve-key.pem
+host_key_checking = False
+
+```
+
+---
+
+## Step4 Test Dynamic Inventory
+
+```
+ansible-inventory --graph -v
+
+```
+---
+
+###  you will show your instance that you tagged it  
+
+```'
+@all:
+  |--@ungrouped:
+  |--@aws_ec2:
+  |  |--ec2-54-88-67-35.compute-1.amazonaws.com
+```
