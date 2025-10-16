@@ -28,7 +28,7 @@ ansible/
 ```inventory.ini
 
 [db_servers]
-192.168.56.11 ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/id_rsa
+192.168.236.135 ansible_user=ebrahim  ansible_become_pass=pass of managed node
 ```
 
 ---
