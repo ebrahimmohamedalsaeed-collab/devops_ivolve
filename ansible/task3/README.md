@@ -61,9 +61,10 @@
 ## Step 4: Kubectl Role Tasks (\roles/kubectl/tasks/main.yml\)
 
 ```yaml
+---
 - name: Download kubectl
   ansible.builtin.get_url:
-    url: https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
+    url: https://dl.k8s.io/release/v1.31.0/bin/linux/amd64/kubectl
     dest: /usr/local/bin/kubectl
     mode: '0755'
 
@@ -74,6 +75,7 @@
 - name: Show kubectl version
   ansible.builtin.debug:
     var: kubectl_version.stdout
+
 ```
 
 ---
@@ -153,16 +155,24 @@ systemctl status jenkins
 
 ## some notes
  ```jenkins
+on managed node
 
  sudo apt update
+
 
 sudo apt install openjdk-17-jdk
 
 sudo update-alternatives --config java
 
+sudo nano /etc/default/jenkins
+
+add this line JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+
 If Java 17 appears in the list, select it by typing its number.
 
 java -version
+
+sudo systemctl daemon-reload
 
 sudo systemctl restart Jenkins
 ```
