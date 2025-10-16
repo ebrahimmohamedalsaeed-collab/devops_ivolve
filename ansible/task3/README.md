@@ -176,3 +176,18 @@ sudo systemctl daemon-reload
 
 sudo systemctl restart Jenkins
 ```
+
+---
+
+## Open jenkins
+
+```
+http://localhost:8080
+```
+
+### to get admin password
+
+```
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+```
+
