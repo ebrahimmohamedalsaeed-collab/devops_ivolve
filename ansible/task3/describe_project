@@ -1,0 +1,19 @@
+ansible/
+├── inventory.ini
+├── lab3_playbook.yml
+└── roles/
+    ├── docker/
+    │   ├── tasks/
+    │   │   └── main.yml
+    │   └── defaults/
+    │       └── main.yml
+    ├── kubectl/
+    │   ├── tasks/
+    │   │   └── main.yml
+    │   └── defaults/
+    │       └── main.yml
+    └── jenkins/
+        ├── tasks/
+        │   └── main.yml
+        └── defaults/
+            └── main.yml
