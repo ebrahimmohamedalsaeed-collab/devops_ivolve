@@ -1,0 +1,53 @@
+---
+- name: Lab 4 - Securing Sensitive Data with Ansible Vault
+  hosts: managed_nodes
+  become: true
+  vars_files:
+    - vault.yml  # تحميل المتغيرات المشفرة
+
+  tasks:
+    - name: Install MySQL server
+      apt:
+        name: mysql-server
+        state: present
+        update_cache: yes
+
+    - name: Ensure MySQL service is running
+      service:
+        name: mysql
+        state: started
+        enabled: yes
+
+    - name: Create iVolve database using Unix socket
+      community.mysql.mysql_db:
+        name: iVolve
+        state: present
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+
+    - name: Create database user with privileges for localhost using Unix socket
+      community.mysql.mysql_user:
+        name: "{{ db_user }}"
+        password: "{{ db_password }}"
+        priv: 'iVolve.*:ALL'
+        host: "localhost"
+        state: present
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+
+    - name: Flush MySQL privileges to apply changes
+      community.mysql.mysql_user:
+        name: "{{ db_user }}"
+        host: "localhost"
+        state: present
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+
+    - name: Validate database by connecting and listing databases using Unix socket
+      command: "mysql -u {{ db_user }} -p{{ db_password }} -e 'SHOW DATABASES;'"
+      environment:
+        MYSQL_UNIX_PORT: /var/run/mysqld/mysqld.sock
+      register: db_list
+      ignore_errors: yes
+
+    - name: Show list of databases
+      debug:
+        var: db_list.stdout_lines
+
