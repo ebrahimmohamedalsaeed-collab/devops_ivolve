@@ -1,0 +1,22 @@
+# Use official Python image
+FROM python:3.9-slim
+
+# Set production environment variables (inside image)
+ENV APP_MODE=production
+ENV APP_REGION=canada-west
+
+# Set working directory
+WORKDIR /app
+
+# Copy all files to container
+COPY . /app
+
+# Install Flask
+RUN pip install flask
+
+# Expose port 8080
+EXPOSE 8080
+
+# Run the application
+CMD ["python", "app.py"]
+
