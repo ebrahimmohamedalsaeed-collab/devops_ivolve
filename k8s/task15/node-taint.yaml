@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Node
+metadata:
+  name: managednode
+spec:
+  taints:
+  - key: "workload"
+    value: "worker"
+    effect: "NoSchedule"
+
