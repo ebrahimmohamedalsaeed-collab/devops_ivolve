@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nodejs-app
+  template:
+    metadata:
+      labels:
+        app: nodejs-app
+    spec:
+      tolerations:
+      - key: "workload"
+        operator: "Equal"
+        value: "worker"
+        effect: "NoSchedule"
+      containers:
+      - name: nodejs
+        image: ebrahimrhh/node-app:lab14
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_HOST
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: DB_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: DB_PASSWORD
+        - name: DB_NAME
+          value: "ivolve"
+        volumeMounts:
+        - name: nodejs-storage
+          mountPath: /app/data
+      volumes:
+      - name: nodejs-storage
+        persistentVolumeClaim:
+          claimName: nodejs-pvc
