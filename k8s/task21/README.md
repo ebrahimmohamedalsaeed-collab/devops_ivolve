@@ -374,3 +374,17 @@ mysql> SHOW GRANTS FOR 'appuser'@'%';
 
 mysql> exit
 ```
+## Step13 Port Forwarding
+```
+ebrahim@ebrahim:~/devops_ivolve/k8s/task21$ kubectl port-forward service/nodejs-service 8080:80
+Forwarding from 127.0.0.1:8080 -> 3000
+Forwarding from [::1]:8080 -> 3000
+Handling connection for 8080
+Handling connection for 8080
+
+>will appear
+
+ebrahim@ebrahim:~$ curl http://localhost:8080/health
+curl http://localhost:8080/ready
+🚀 iVolve web app is working! Keep calm and code on! 🎉👍 iVolve web app is ready to rock and roll! 🤘
+```
