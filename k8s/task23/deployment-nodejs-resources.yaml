@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nodejs-app
+  template:
+    metadata:
+      labels:
+        app: nodejs-app
+    spec:
+      tolerations:
+      - key: "workload"
+        operator: "Equal"
+        value: "worker"
+        effect: "NoSchedule"
+      
+      # Init Container to setup DB (Task 21)
+      initContainers:
+      - name: db-setup
+        image: mysql:5.7
+        command:
+        - bash
+        - -c
+        - |
+          echo "🔄 Waiting for MySQL to be ready..."
+          until mysql -h"${MYSQL_HOST}" -u"root" -p"${MYSQL_ROOT_PASSWORD}" -e "SELECT 1" &>/dev/null; do
+            echo "⏳ MySQL not ready yet, waiting..."
+            sleep 3
+          done
+          echo "✅ MySQL is ready!"
+          echo "📝 Creating database 'ivolve' if not exists..."
+          mysql -h"${MYSQL_HOST}" -u"root" -p"${MYSQL_ROOT_PASSWORD}" -e "CREATE DATABASE IF NOT EXISTS ivolve;"
+          echo "👤 Creating user 'appuser' if not exists..."
+          mysql -h"${MYSQL_HOST}" -u"root" -p"${MYSQL_ROOT_PASSWORD}" -e "CREATE USER IF NOT EXISTS 'appuser'@'%' IDENTIFIED BY 'apppassword';"
+          echo "🔐 Granting all privileges on 'ivolve' database to 'appuser'..."
+          mysql -h"${MYSQL_HOST}" -u"root" -p"${MYSQL_ROOT_PASSWORD}" -e "GRANT ALL PRIVILEGES ON ivolve.* TO 'appuser'@'%';"
+          echo "♻️  Flushing privileges..."
+          mysql -h"${MYSQL_HOST}" -u"root" -p"${MYSQL_ROOT_PASSWORD}" -e "FLUSH PRIVILEGES;"
+          echo "✅ Database and user setup completed successfully!"
+        env:
+        - name: MYSQL_HOST
+          value: "mysql-service"
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_ROOT_PASSWORD
+      
+      # Main Node.js container with probes and resource management (Task 22 & 23)
+      containers:
+      - name: nodejs
+        image: ebrahimrhh/node-app:lab14
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        env:
+        - name: DB_HOST
+          value: "mysql-service"
+        - name: DB_USER
+          value: "appuser"
+        - name: DB_PASSWORD
+          value: "apppassword"
+        - name: DB_NAME
+          value: "ivolve"
+        volumeMounts:
+        - name: nodejs-storage
+          mountPath: /app/data
+        resources:
+          # Task 23: Resource Requests & Limits
+          requests:
+            cpu: 250m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          failureThreshold: 3
+      
+      volumes:
+      - name: nodejs-storage
+        persistentVolumeClaim:
+          claimName: nodejs-pvc
