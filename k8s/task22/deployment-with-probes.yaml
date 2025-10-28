@@ -98,3 +98,4 @@ spec:
       - name: nodejs-storage
         persistentVolumeClaim:
           claimName: nodejs-pvc
+
