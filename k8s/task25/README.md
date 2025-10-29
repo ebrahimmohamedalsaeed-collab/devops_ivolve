@@ -292,6 +292,7 @@ Handling connection for 9090
 http://localhost:9090
 ```
 
+![Screenshot Task25](https://raw.githubusercontent.com/ebrahimmohamedalsaeed-collab/devops_ivolve/main/k8s/task25/Screenshot1.png)
 
 
 
@@ -300,3 +301,4 @@ http://localhost:9090
 
 
   
+
