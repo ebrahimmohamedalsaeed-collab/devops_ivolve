@@ -1,75 +1,17 @@
+@Library('EbrahimSharedLib') _
+
 pipeline {
     agent { label 'slave' }
 
     stages {
-        stage('RunUnitTest') {
-            steps {
-                script {
-                    def runTest = load "jenkins/task31/jenkins_shared_lib/vars/runUnitTest.groovy"
-                    runTest()
-                }
-            }
-        }
-
-        stage('BuildApp') {
-            steps {
-                script {
-                    def build = load "jenkins/task31/jenkins_shared_lib/vars/buildApp.groovy"
-                    build()
-                }
-            }
-        }
-
-        stage('BuildImage') {
-            steps {
-                script {
-                    def buildImg = load "jenkins/task31/jenkins_shared_lib/vars/buildImage.groovy"
-                    buildImg()
-                }
-            }
-        }
-
-        stage('ScanImage') {
-            steps {
-                script {
-                    def scan = load "jenkins/task31/jenkins_shared_lib/vars/scanImage.groovy"
-                    scan()
-                }
-            }
-        }
-
-        stage('PushImage') {
-            steps {
-                script {
-                    def push = load "jenkins/task31/jenkins_shared_lib/vars/pushImage.groovy"
-                    push()
-                }
-            }
-        }
-
-        stage('RemoveImageLocally') {
-            steps {
-                script {
-                    def remove = load "jenkins/task31/jenkins_shared_lib/vars/removeImageLocally.groovy"
-                    remove()
-                }
-            }
-        }
-
-        stage('DeployOnK8s') {
-            steps {
-                script {
-                    def deploy = load "jenkins/task31/jenkins_shared_lib/vars/deployOnK8s.groovy"
-                    deploy()
-                }
-            }
-        }
+        stage('RunUnitTest') { steps { runUnitTest() } }
+        stage('BuildApp') { steps { buildApp() } }
+        stage('BuildImage') { steps { buildImage() } }
+        stage('ScanImage') { steps { scanImage() } }
+        stage('PushImage') { steps { pushImage() } }
+        stage('RemoveImageLocally') { steps { removeImageLocally() } }
+        stage('DeployOnK8s') { steps { deployOnK8s() } }
     }
 
-    post {
-        always {
-            echo "✅ CI/CD Pipeline finished successfully!"
-        }
-    }
+    post { always { echo "✅ CI/CD Pipeline finished successfully!" } }
 }
-
