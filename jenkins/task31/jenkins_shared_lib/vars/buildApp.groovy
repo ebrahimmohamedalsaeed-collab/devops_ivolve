@@ -1,5 +1,5 @@
 def call() {
     echo "Building application..."
-    sh 'ls -la Jenkins_App'
-    sh 'mvn clean package -f Jenkins_App/pom.xml'
+    // استخدام المسار الكامل من root workspace
+    sh 'mvn clean package -f jenkins/task31/Jenkins_App/pom.xml'
 }
