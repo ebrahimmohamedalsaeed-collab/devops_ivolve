@@ -1,6 +1,4 @@
 def call() {
-    echo "Building Docker image..."
-    // استخدم المسار الكامل داخل الـ repo
-    sh 'docker build -t myapp:latest jenkins/task31/Jenkins_App'
+    echo "Building application..."
+    sh 'mvn clean package -f jenkins/task31/Jenkins_App/pom.xml'
 }
-
