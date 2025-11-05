@@ -1,17 +1,56 @@
-@Library('EbrahimSharedLib') _
+@Library('EbrahimSharedLib') _  // اسم المكتبة اللي ضفتها في Jenkins
 
 pipeline {
-    agent { label 'slave' }
+    agent { label 'slave' }  // الـ Agent اللي هيشغل الـ Pipeline
 
     stages {
-        stage('RunUnitTest') { steps { runUnitTest() } }
-        stage('BuildApp') { steps { buildApp() } }
-        stage('BuildImage') { steps { buildImage() } }
-        stage('ScanImage') { steps { scanImage() } }
-        stage('PushImage') { steps { pushImage() } }
-        stage('RemoveImageLocally') { steps { removeImageLocally() } }
-        stage('DeployOnK8s') { steps { deployOnK8s() } }
+        stage('RunUnitTest') {
+            steps {
+                runUnitTest()
+            }
+        }
+
+        stage('BuildApp') {
+            steps {
+                buildApp()
+            }
+        }
+
+        stage('BuildImage') {
+            steps {
+                buildImage()
+            }
+        }
+
+        stage('ScanImage') {
+            steps {
+                scanImage()
+            }
+        }
+
+        stage('PushImage') {
+            steps {
+                pushImage()
+            }
+        }
+
+        stage('RemoveImageLocally') {
+            steps {
+                removeImageLocally()
+            }
+        }
+
+        stage('DeployOnK8s') {
+            steps {
+                deployOnK8s()
+            }
+        }
     }
 
-    post { always { echo "✅ CI/CD Pipeline finished successfully!" } }
+    post {
+        always {
+            echo "✅ CI/CD Pipeline finished successfully!"
+        }
+    }
 }
+
