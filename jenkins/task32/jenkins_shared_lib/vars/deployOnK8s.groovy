@@ -1,8 +1,9 @@
+// vars/deployOnK8s.groovy
 def call(String imageTag) {
     def ns = env.BRANCH_NAME
     echo "Deploying ${imageTag} on namespace ${ns}"
 
-    // استخدم المسار الكامل بالنسبة للـ workspace على الـ node
+    // المسار الكامل بالنسبة للـ workspace
     def workspace = pwd()
     def filePath = "${workspace}/jenkins/task32/Jenkins_App/deployment-template.yaml"
     
@@ -16,5 +17,6 @@ def call(String imageTag) {
     kubectl get pods -n ${ns}
     """
 }
+
 
 
