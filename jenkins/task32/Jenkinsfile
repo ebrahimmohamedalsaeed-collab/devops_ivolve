@@ -2,7 +2,7 @@
 @Library('EbrahimSharedLib') _
 
 pipeline {
-    agent { label 'task32-slave' }
+    agent { label 'slave' }
 
     environment {
         DOCKER_USER = 'ebrahimrhh'
