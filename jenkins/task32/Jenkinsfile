@@ -1,0 +1,55 @@
+@Library('EbrahimSharedLib') _
+
+pipeline {
+    agent { label 'slave' }
+
+    environment {
+        DOCKER_USER = 'ebrahimrhh'
+        DOCKER_PASS = credentials('dockerhub')
+    }
+
+    stages {
+        stage('RunUnitTest') {
+            steps { runUnitTest() }
+        }
+
+        stage('BuildApp') {
+            steps { buildApp() }
+        }
+
+        stage('BuildImage') {
+            steps {
+                script {
+                    env.IMAGE_TAG = buildImage(DOCKER_USER)
+                }
+            }
+        }
+
+        stage('ScanImage') {
+            steps { scanImage() }
+        }
+
+        stage('PushImage') {
+            steps {
+                script { pushImage(env.IMAGE_TAG) }
+            }
+        }
+
+        stage('RemoveImageLocally') {
+            steps { removeImageLocally() }
+        }
+
+        stage('DeployOnK8s') {
+            steps {
+                script { deployOnK8s(env.IMAGE_TAG) }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "✅ Pipeline for ${env.BRANCH_NAME} finished"
+        }
+    }
+}
+
