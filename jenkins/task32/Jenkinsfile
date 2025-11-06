@@ -1,4 +1,3 @@
-
 @Library('EbrahimSharedLib') _
 
 pipeline {
@@ -11,11 +10,19 @@ pipeline {
 
     stages {
 
+        // 🔹 Clean Workspace
+        stage('Clean Workspace') {
+            steps {
+                deleteDir()
+            }
+        }
+
         // 🔹 Checkout
         stage('Checkout') {
             steps {
                 checkout scm
-                sh 'ls -R jenkins/task32/Jenkins_App/'
+                sh 'echo "Current branch: ${BRANCH_NAME}"'
+                sh 'ls -R jenkins/task32/Jenkins_App/'  // تأكد من وجود الملفات
             }
         }
 
@@ -38,7 +45,7 @@ pipeline {
             }
         }
 
-        // 🔹 Scan Image (if any scanning tool is integrated)
+        // 🔹 Scan Image (optional)
         stage('ScanImage') {
             steps { scanImage() }
         }
@@ -72,4 +79,3 @@ pipeline {
         }
     }
 }
-
