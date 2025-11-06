@@ -15,6 +15,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+                sh 'ls -R jenkins/task32/Jenkins_App/'
             }
         }
 
