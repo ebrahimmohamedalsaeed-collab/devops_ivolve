@@ -70,6 +70,12 @@ kubectl exec -it mysql-deployment-7d44c79947-7zxtg -- mysql -u demo -pdemo phish
 ![Screenshot 318](https://github.com/ebrahimmohamedalsaeed-collab/PayPal_K8s/raw/main/Screenshot%20(318).png)
 
 
+## using argocd 
+
+![Screenshot](https://github.com/ebrahimmohamedalsaeed-collab/devops_ivolve/blob/main/jenkins/task33/Screenshot%20(324).png?raw=true)
+
+
+
 
 
 
